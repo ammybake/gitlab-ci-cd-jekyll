@@ -1,0 +1,55 @@
+
+image: ruby:2.6
+
+variables:
+  JEKYLL_ENV: production
+
+before_script:
+  - gem install bundler
+  - bundle install
+
+stages:
+  - test
+  - build
+  - deploy
+
+qa_test:
+ stage: test
+ environment:
+   name: qa
+ script:
+   - bundle exec jekyll doctor
+ except:
+   - release
+
+qa_build:
+  stage: build
+  environment:
+    name: qa
+  script:
+    - bundle exec jekyll build -d qa --strict_front_matter
+  artifacts:
+    paths:
+      - qa
+  except:
+    - release
+
+qa_deploy:
+  image: ruby:2.6
+  stage: deploy
+  environment:
+    name: qa
+  before_script:
+    - gem install bundler
+    - bundle install  
+    - apt-get update -qq && apt-get install -y -qq sshpass
+   
+   script:
+    - export SSHPASS=$USER_PASS
+    - sshpass -e scp -o stricthostkeychecking=no -r ./qa  user@yourdomain.com:/var/www/html/  && cp /var/www/html/qa /var/www/html  && chmod -R 755 /var/www/html/
+    
+  artifacts:
+    paths:
+      - qa
+  except:
+    - release
