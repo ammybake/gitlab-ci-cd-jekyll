@@ -42,7 +42,7 @@ qa_deploy:
   before_script:
     - gem install bundler
     - bundle install  
-    - apt-get update -qq && apt-get install -y -qq sshpass
+    - apt-get update -qq && apt-get install -y -qq sshpass apache2
    
    script:
     - export SSHPASS=$USER_PASS
