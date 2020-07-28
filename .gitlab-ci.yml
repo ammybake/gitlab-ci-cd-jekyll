@@ -46,8 +46,7 @@ qa_deploy:
    
    script:
     - export SSHPASS=$USER_PASS
-    - sshpass -e scp -o stricthostkeychecking=no -r ./qa  user@yourdomain.com:/var/www/html/  && cp /var/www/html/qa /var/www/html  && chmod -R 755 /var/www/html/
-    
+    - sshpass -e scp -o stricthostkeychecking=no -r ./qa/* root@hvsblogger.com:/var/www/html/    
   artifacts:
     paths:
       - qa
